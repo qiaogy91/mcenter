@@ -1,0 +1,32 @@
+syntax = "proto3";
+package mcenter.user;
+option go_package = "github.com/qiaogy91/mcenter/apps/user";
+
+
+
+message UserSet {
+    int64 total = 1;
+    repeated User items = 2;
+}
+
+message User {
+    // @gotags: json:"meta" gorm:"embedded"
+    Meta meta = 1;
+    // @gotags: json:"spec" gorm:"embedded"
+    CreateUserRequest spec = 2;
+}
+
+message Meta {
+    // @gotags: json:"created_at" gorm:"primaryKey"
+    int64 id = 1;
+    // @gotags: json:"created_at" gorm:"autoCreateTime"
+    int64 created_at = 2;
+    // @gotags: json:"updated_at" gorm:"autoUpdateTime"
+    int64 updated_at = 3;
+}
+message CreateUserRequest {
+    // @gotags: validate:"required" gorm:"unique"
+    string username = 1;
+    // @gotags: validate:"required"
+    string password = 2;
+}

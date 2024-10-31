@@ -1,0 +1,32 @@
+application:
+  appName: "mcenter"
+  description: "微服务用户中心"
+  domain: "example.com"
+
+log:
+  otlp: true
+
+http:
+  host: "0.0.0.0"
+  port: 8082
+  otlp: true
+
+grpc:
+  host: "0.0.0.0"
+  port: 18082
+  token: "mcenter-token"
+
+
+otlp:
+  httpEndpoint: "10.54.44.78:4318"
+  grpcEndpoint: "10.54.44.78:4317"
+  enableTLS: false
+
+datasource:
+  otlp: true
+  host: "127.0.0.1"
+  port: 3306
+  database: "CloudManager"
+  username: "root"
+  password: "redhat"
+  debug: true

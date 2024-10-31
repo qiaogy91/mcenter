@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package mcenter.user;
+
+import "apps/user/pb/model.proto";
+
+option go_package = "github.com/qiaogy91/mcenter/apps/user";
+
+service Rpc {
+    rpc CreateUser (CreateUserRequest) returns (User);
+    rpc DeleteUser (DeleteUserRequest) returns (User);
+    rpc UpdatePassword (UpdatePasswordRequest) returns (User);
+    rpc GetUser (GetUserRequest) returns (User);
+    rpc QueryUser (QueryUserRequest) returns (UserSet);
+}
+enum QueryType {
+    QUERY_TYPE_UNSPECIFIED = 0;
+    QUERY_TYPE_USERNAME = 1;
+}
+message DeleteUserRequest {
+    // @gotags: validate:"required"
+    string username = 1;
+}
+message UpdatePasswordRequest {
+    // @gotags: validate:"required"
+    string username = 1;
+    // @gotags: validate:"required"
+    string password = 2;
+    // @gotags: validate:"required"
+    string new_password = 3;
+}
+message GetUserRequest {
+    // @gotags: validate:"required"
+    string username = 1;
+}
+message QueryUserRequest {
+    // @gotags: validate:"required"
+    int64 page_num = 1;
+    // @gotags: validate:"required"
+    int64 page_size = 2;
+    // @gotags: validate:"required"
+    QueryType query_type = 3;
+    string keyword = 4;
+}
