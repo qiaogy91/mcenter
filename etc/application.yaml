@@ -4,14 +4,16 @@ application:
   domain: "example.com"
 
 log:
-  otlp: true
+  otlp: false
 
 http:
+  enabled: true
   host: "0.0.0.0"
   port: 8082
-  otlp: true
+  otlp: false
 
 grpc:
+  enabled: true
   host: "0.0.0.0"
   port: 18082
   token: "mcenter-token"
@@ -30,3 +32,9 @@ datasource:
   username: "root"
   password: "redhat"
   debug: true
+
+
+mcenterClient:
+  host: "127.0.0.1"
+  port: 18082
+  token: "mcenter-token"

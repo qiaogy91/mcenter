@@ -9,6 +9,7 @@ import (
 func NewToken(u *user.User) *Token {
 	return &Token{
 		UserId:          u.Meta.Id,
+		Username:        u.Spec.Username,
 		AccessToken:     xid.New().String(),
 		RefreshToken:    xid.New().String(),
 		CreatedAt:       time.Now().Unix(),

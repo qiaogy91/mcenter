@@ -1,18 +1,20 @@
 syntax = "proto3";
-package mcenter.token;
-option go_package = "github.com/qiaogy91/mcenter/apps/token";
 
+package mcenter.token;
+
+option go_package = "github.com/qiaogy91/mcenter/apps/token";
 
 
 message Token {
     // @gotags: json:"created_at" gorm:"primaryKey"
     int64 id = 1;
     int64 user_id = 2;
-    string access_token = 3;
-    string refresh_token = 4;
-    int64 created_at = 5;
-    int64 access_expire_at = 6;
-    int64 refresh_expire_at = 7;
+    string username = 3;
+    string access_token = 4;
+    string refresh_token = 5;
+    int64 created_at = 6;
+    int64 access_expire_at = 7;
+    int64 refresh_expire_at = 8;
 }
 
 message TokenSet {

@@ -3,6 +3,7 @@ package impl
 import (
 	"github.com/qiaogy91/ioc"
 	"github.com/qiaogy91/ioc/config/datasource"
+	"github.com/qiaogy91/ioc/config/grpc"
 	"github.com/qiaogy91/ioc/config/log"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"github.com/qiaogy91/mcenter/apps/user"
@@ -26,6 +27,13 @@ func (i *Impl) Init() {
 	i.log = log.Sub(token.AppName)
 	i.db = datasource.DB()
 	i.svc = user.GetSvc()
+
+	i.grpcRegistry()
+}
+
+func (i *Impl) grpcRegistry() {
+	s := grpc.Get().Server()
+	token.RegisterRpcServer(s, i)
 }
 
 func init() {
