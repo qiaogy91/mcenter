@@ -52,3 +52,4 @@
 {"time":"2024-11-01T18:51:39.894292+08:00","level":"DEBUG","source":{"function":"github.com/qiaogy91/ioc/config/datasource.(*DataSource).Init","file":"config/datasource/mysql.go","line":85},"msg":"mysql Otlp enabled","component":"datasource"}
 {"time":"2024-11-01T18:51:53.719114+08:00","level":"DEBUG","source":{"function":"github.com/qiaogy91/ioc/config/otlp.(*Impl).Init","file":"config/otlp/otlp.go","line":54},"msg":"OpenTelemetry provider registered","component":"otlp"}
 {"time":"2024-11-01T18:51:53.724763+08:00","level":"DEBUG","source":{"function":"github.com/qiaogy91/ioc/config/datasource.(*DataSource).Init","file":"config/datasource/mysql.go","line":85},"msg":"mysql Otlp enabled","component":"datasource"}
+{"time":"2024-11-04T10:06:19.418117+08:00","level":"DEBUG","source":{"function":"github.com/qiaogy91/ioc/config/otlp.(*Impl).Init","file":"config/otlp/otlp.go","line":54},"msg":"OpenTelemetry provider registered","component":"otlp"}

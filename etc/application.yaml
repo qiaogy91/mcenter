@@ -19,13 +19,13 @@ grpc:
   token: "mcenter-token"
 
 
-otlp:
-  httpEndpoint: "10.54.44.78:4318"
-  grpcEndpoint: "10.54.44.78:4317"
-  enableTLS: false
+#otlp:
+#  httpEndpoint: "10.54.44.78:4318"
+#  grpcEndpoint: "10.54.44.78:4317"
+#  enableTLS: false
 
 datasource:
-  otlp: true
+  otlp: false
   host: "127.0.0.1"
   port: 3306
   database: "CloudManager"
