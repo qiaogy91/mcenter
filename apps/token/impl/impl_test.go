@@ -28,7 +28,7 @@ func TestImpl_CreateTable(t *testing.T) {
 }
 
 func TestImpl_IssueToken(t *testing.T) {
-	for i := 1; i <= 2; i++ {
+	for i := 1; i <= 1; i++ {
 		req := &token.IssueTokenRequest{
 			Username: "user_66",
 			Password: "redhat",

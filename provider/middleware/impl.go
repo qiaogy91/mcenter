@@ -9,7 +9,7 @@ import (
 	"log/slog"
 )
 
-const AppName = "McenterFilter"
+const AppName = "mcenterFilter"
 
 type Impl struct {
 	ioc.ObjectImpl
