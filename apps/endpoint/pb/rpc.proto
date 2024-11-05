@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package mcenter.endpoint;
+
+import "apps/endpoint/pb/model.proto";
+
+option go_package = "github.com/qiaogy91/mcenter/apps/endpoint";
+
+
+// 批量创建、删除、查询
+service Rpc {
+    rpc CreateEndpoint (EndpointSpecSet) returns (EndpointSet);
+    rpc QueryEndpoint (QueryEndpointRequest) returns (EndpointSet);
+    rpc DeleteEndpoint (DeleteEndpointRequest) returns (EndpointSet);
+}
+
+
+enum QueryType {
+    QUERY_TYPE_UNSPECIFIED = 0;
+    QUERY_TYPE_SERVICE = 1;
+    QUERY_TYPE_RESOURCE = 2;
+    QUERY_TYPE_ACTION = 3;
+}
+
+message EndpointSpecSet {
+    // @gptags: validate:"required"
+    repeated Spec items = 1;
+}
+message QueryEndpointRequest {
+    // @gptags: validate:"required"
+    int64 page_number = 1;
+    // @gptags: validate:"required"
+    int64 page_size = 2;
+    QueryType query_type = 3;
+    string keyword = 4;
+}
+
+message DeleteEndpointRequest {
+    // @gptags: validate:"required"
+    string service = 1;
+}

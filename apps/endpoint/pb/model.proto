@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package mcenter.endpoint;
+
+option go_package = "github.com/qiaogy91/mcenter/apps/endpoint";
+
+
+message EndpointSet {
+    // @gotags: json:"total"
+    int64 total = 1;
+    // @gotags: json:"items"
+    repeated Endpoint items = 2;
+}
+
+message Endpoint {
+    // @gotags: gorm:"embedded"
+    Meta meta = 1;
+    // @gotags: gorm:"embedded"
+    Spec spec = 2;
+}
+
+message Meta {
+    // @gotags: json:"created_at" gorm:"primaryKey"
+    int64 id = 1;
+    // @gotags: json:"created_at" gorm:"autoCreateTime"
+    int64 created_at = 2;
+    // @gotags: json:"updated_at" gorm:"autoUpdateTime"
+    int64 updated_at = 3;
+}
+
+
+// 如果让Role 取关联Ep 表的普通ID，那么当服务重新上线后（注册时，会先删除、后创建ep，此时ID会变动）那么就会导致已经配置的权限失效
+// 因此  identity = "svc.module.method.url" ，创建权限时使用 Role 表跟这个 identify 进行关联
+// 核心是确保被引用的 identify 字段的值，在服务端重启后不能发生改变
+message Spec {
+    // 服务名称
+    // @gotags: json:"service" validate:"required"
+    string service = 1;
+    // 模块名称
+    // @gotags: json:"resource" validate:"required"
+    string resource = 2;
+    // 操作行为
+    // @gotags: json:"action" validate:"required"
+    string action = 3;
+
+    // 端点唯一标识
+    // identity = "service.model.path" = "cmdb.cmdb.post./cmdb/api/v1/secret"
+    // @gotags: json:"identity" validate:"required"
+    string identity = 5;
+
+    // 端点描述
+    // @gotags: json:"desc" validate:"required"
+    string desc = 6;
+
+}
+
