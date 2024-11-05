@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package mcenter.role;
+
+
+option go_package = "github.com/qiaogy91/mcenter/apps/role";
+
+
+message RoleSet {
+    int64 total = 1;
+    repeated Role items = 2;
+}
+message Role {
+    // @gotags: gorm:"embedded"
+    Meta meta = 1;
+    // @gotags: gorm:"embedded"
+    Spec spec = 2;
+}
+
+message Meta {
+    // @gotags: json:"created_at" gorm:"primaryKey"
+    int64 id = 1;
+    // @gotags: json:"created_at" gorm:"autoCreateTime"
+    int64 created_at = 2;
+    // @gotags: json:"updated_at" gorm:"autoUpdateTime"
+    int64 updated_at = 3;
+}
+
+message Spec {
+    // @gotags: json:"name" validate:"required"
+    string name = 1;
+    // @gotags: json:"service" validate:"required"
+    string service = 2;
+    // @gotags: json:"resource" validate:"required"
+    string resource = 3;
+    // @gotags: json:"action" validate:"required" gorm:"json"
+    repeated string action = 4;
+    // @gotags: json:"description" validate:"required"
+    string description = 5;
+}

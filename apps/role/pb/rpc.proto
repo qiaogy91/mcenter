@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package mcenter.role;
+
+import "apps/role/pb/model.proto";
+
+option go_package = "github.com/qiaogy91/mcenter/apps/role";
+
+
+service Rpc {
+    rpc CreateRole (Spec) returns (Role);
+    rpc DescRole (DescRoleRequest) returns (Role);
+    rpc QueryRole (QueryRoleRequest) returns (RoleSet);
+    rpc DeleteRole (DeleteRoleRequest) returns (Role);
+}
+
+enum QueryType {
+    QUERY_TYPE_UNSPECIFIED = 0;
+    QUERY_TYPE_ROLE_NAME = 1;
+    QUERY_TYPE_DESC = 2;
+}
+
+message QueryRoleRequest {
+    // @gotags: validate:"required"
+    int64 page_num = 1;
+    // @gotags: validate:"required"
+    int64 page_size = 2;
+    QueryType query_type = 3;
+    string keyword = 4;
+}
+
+message DescRoleRequest {
+    // @gotags: validate:"required"
+    int64 id = 1;
+}
+message DeleteRoleRequest {
+    // @gotags: validate:"required"
+    int64 id = 1;
+}
+

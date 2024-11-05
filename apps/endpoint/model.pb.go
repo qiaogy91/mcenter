@@ -200,7 +200,6 @@ func (x *Meta) GetUpdatedAt() int64 {
 	return 0
 }
 
-// 这里需要替换为1个字段，因为Role 需要与这张表中的这个特殊字段进行关联
 // 如果让Role 取关联Ep 表的普通ID，那么当服务重新上线后（注册时，会先删除、后创建ep，此时ID会变动）那么就会导致已经配置的权限失效
 // 因此  identity = "svc.module.method.url" ，创建权限时使用 Role 表跟这个 identify 进行关联
 // 核心是确保被引用的 identify 字段的值，在服务端重启后不能发生改变

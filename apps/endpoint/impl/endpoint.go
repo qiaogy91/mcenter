@@ -51,7 +51,7 @@ func (i *Impl) QueryEndpoint(ctx context.Context, req *endpoint.QueryEndpointReq
 	offset := int((req.PageNumber - 1) * req.PageSize)
 	limit := int(req.PageSize)
 
-	if err := sql.Offset(offset).Limit(limit).Count(&ins.Total).Find(&ins.Items).Error; err != nil {
+	if err := sql.Count(&ins.Total).Offset(offset).Limit(limit).Find(&ins.Items).Error; err != nil {
 		return nil, err
 	}
 
