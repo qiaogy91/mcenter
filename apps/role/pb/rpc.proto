@@ -18,6 +18,7 @@ enum QueryType {
     QUERY_TYPE_UNSPECIFIED = 0;
     QUERY_TYPE_ROLE_NAME = 1;
     QUERY_TYPE_DESC = 2;
+    QUERY_TYPE_ROLE_IDS = 3;
 }
 
 message QueryRoleRequest {
@@ -27,6 +28,7 @@ message QueryRoleRequest {
     int64 page_size = 2;
     QueryType query_type = 3;
     string keyword = 4;
+    repeated int64 ids = 5;
 }
 
 message DescRoleRequest {

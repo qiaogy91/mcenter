@@ -5,6 +5,7 @@ import (
 	"github.com/qiaogy91/ioc"
 	_ "github.com/qiaogy91/ioc/config/otlp"
 	_ "github.com/qiaogy91/mcenter/apps"
+	_ "github.com/qiaogy91/mcenter/apps/role/impl"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"testing"
 )
@@ -30,7 +31,7 @@ func TestImpl_CreateTable(t *testing.T) {
 func TestImpl_IssueToken(t *testing.T) {
 	for i := 1; i <= 1; i++ {
 		req := &token.IssueTokenRequest{
-			Username: "user_66",
+			Username: "qiaogy",
 			Password: "redhat",
 		}
 
@@ -43,7 +44,7 @@ func TestImpl_IssueToken(t *testing.T) {
 }
 
 func TestImpl_ValidateToken(t *testing.T) {
-	req := &token.ValidateTokenRequest{AccessToken: "cshmn8is4uq1o285fh6g"}
+	req := &token.ValidateTokenRequest{AccessToken: "cslj01qs4uq7t37mjtlg"}
 	inst, err := c.ValidateToken(ctx, req)
 	if err != nil {
 		t.Fatal(err)

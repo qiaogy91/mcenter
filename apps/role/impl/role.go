@@ -50,6 +50,8 @@ func (i *Impl) QueryRole(ctx context.Context, req *role.QueryRoleRequest) (*role
 		sql = sql.Where("name = ?", req.Keyword)
 	case role.QueryType_QUERY_TYPE_DESC:
 		sql = sql.Where("description like ?", "%"+req.Keyword+"%")
+	case role.QueryType_QUERY_TYPE_ROLE_IDS:
+		sql = sql.Where("id in ?", req.Ids)
 	}
 
 	if err := sql.Count(&ins.Total).Offset(offset).Limit(limit).Find(&ins.Items).Error; err != nil {

@@ -10,6 +10,8 @@ message RoleSet {
     int64 total = 1;
     repeated Role items = 2;
 }
+
+
 message Role {
     // @gotags: gorm:"embedded"
     Meta meta = 1;

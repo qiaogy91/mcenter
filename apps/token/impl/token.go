@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"github.com/qiaogy91/mcenter/apps/user"
@@ -15,7 +14,7 @@ func (i *Impl) CreateTable(ctx context.Context) error {
 
 func (i *Impl) IssueToken(ctx context.Context, req *token.IssueTokenRequest) (*token.Token, error) {
 	if err := validator.New().Struct(req); err != nil {
-		return nil, token.ErrTokenValidate(err)
+		return nil, err
 	}
 
 	r := &user.GetUserRequest{Username: req.Username}
@@ -28,16 +27,16 @@ func (i *Impl) IssueToken(ctx context.Context, req *token.IssueTokenRequest) (*t
 		return nil, err
 	}
 
-	inst := token.NewToken(u)
-	if err := i.db.WithContext(ctx).Model(&token.Token{}).Create(inst).Error; err != nil {
-		return nil, token.ErrTokenCreate(err)
+	ins := token.NewToken(u)
+	if err := i.db.WithContext(ctx).Model(&token.Token{}).Create(ins).Error; err != nil {
+		return nil, err
 	}
-	return inst, nil
+	return ins, nil
 }
 
 func (i *Impl) DeleteToken(ctx context.Context, req *token.DeleteTokenRequest) (*token.Token, error) {
 	if err := validator.New().Struct(req); err != nil {
-		return nil, token.ErrTokenValidate(err)
+		return nil, err
 	}
 
 	inst, err := i.GetToken(ctx, &token.GetTokenRequest{AccessToken: req.AccessToken})
@@ -48,7 +47,7 @@ func (i *Impl) DeleteToken(ctx context.Context, req *token.DeleteTokenRequest) (
 	if err := i.db.WithContext(ctx).Where("access_token = ? AND refresh_token = ?", req.AccessToken, req.RefreshToken).
 		Delete(&token.Token{}).
 		Error; err != nil {
-		return nil, token.ErrTokenDelete(err)
+		return nil, err
 	}
 
 	return inst, nil
@@ -56,12 +55,12 @@ func (i *Impl) DeleteToken(ctx context.Context, req *token.DeleteTokenRequest) (
 
 func (i *Impl) GetToken(ctx context.Context, req *token.GetTokenRequest) (*token.Token, error) {
 	if err := validator.New().Struct(req); err != nil {
-		return nil, token.ErrTokenValidate(err)
+		return nil, err
 	}
 
 	inst := &token.Token{}
 	if err := i.db.WithContext(ctx).Model(&token.Token{}).Where("access_token = ?", req.AccessToken).First(inst).Error; err != nil {
-		return nil, token.ErrTokenNotFound(err)
+		return nil, err
 	}
 
 	return inst, nil
@@ -69,7 +68,7 @@ func (i *Impl) GetToken(ctx context.Context, req *token.GetTokenRequest) (*token
 
 func (i *Impl) RefreshToken(ctx context.Context, req *token.RefreshTokenRequest) (*token.Token, error) {
 	if err := validator.New().Struct(req); err != nil {
-		return nil, token.ErrTokenValidate(err)
+		return nil, err
 	}
 
 	inst, err := i.GetToken(ctx, &token.GetTokenRequest{AccessToken: req.AccessToken})
@@ -82,7 +81,7 @@ func (i *Impl) RefreshToken(ctx context.Context, req *token.RefreshTokenRequest)
 	inst.RefreshExpireAt = time.Now().Add(4 * time.Hour).Unix()
 
 	if err := i.db.Debug().WithContext(ctx).Model(&token.Token{}).Where("access_token = ?", inst.AccessToken).Updates(inst).Error; err != nil {
-		return nil, token.ErrTokenUpdate(err)
+		return nil, err
 	}
 
 	return inst, nil
@@ -90,7 +89,7 @@ func (i *Impl) RefreshToken(ctx context.Context, req *token.RefreshTokenRequest)
 
 func (i *Impl) QueryToken(ctx context.Context, req *token.QueryTokenRequest) (*token.TokenSet, error) {
 	if err := validator.New().Struct(req); err != nil {
-		return nil, token.ErrTokenValidate(err)
+		return nil, err
 	}
 
 	sql := i.db.WithContext(ctx).Model(&token.Token{})
@@ -108,7 +107,7 @@ func (i *Impl) QueryToken(ctx context.Context, req *token.QueryTokenRequest) (*t
 	}
 
 	if err := sql.Count(&inst.Total).Offset(offset).Limit(limit).Find(&inst.Items).Error; err != nil {
-		return nil, token.ErrTokenQuery(err)
+		return nil, err
 	}
 	return inst, nil
 }
@@ -120,29 +119,28 @@ func (i *Impl) ValidateToken(ctx context.Context, req *token.ValidateTokenReques
 		return nil, err
 	}
 
-	// 2. AccessToken 未过期
-	if inst.AccessExpireAt > time.Now().Unix() {
-		return inst, nil
+	// 2. Refresh 过期、那么Access 也必定过期，则删除Token
+	if inst.RefreshExpireAt < time.Now().Unix() {
+		in := &token.DeleteTokenRequest{AccessToken: inst.AccessToken, RefreshToken: inst.RefreshToken}
+		if _, err := i.DeleteToken(ctx, in); err != nil {
+			return nil, err
+		}
+
+		return nil, err
 	}
 
-	// 2. RefreshToken 未过期
-	if inst.RefreshExpireAt > time.Now().Unix() {
+	// 3. Refresh 未过期、Access 过期，则延期下
+	if inst.AccessExpireAt < time.Now().Unix() {
 		in := &token.RefreshTokenRequest{AccessToken: inst.AccessToken, RefreshToken: inst.RefreshToken}
 		inst, err = i.RefreshToken(ctx, in)
 		if err != nil {
 			return nil, err
 		}
-		return inst, nil
 	}
 
-	// 3. 过期后删除
-	in := &token.DeleteTokenRequest{
-		AccessToken:  inst.AccessToken,
-		RefreshToken: inst.RefreshToken,
-	}
-	if _, err := i.DeleteToken(ctx, in); err != nil {
-		return nil, err
-	}
+	// 4. 补充角色信息
+	u, err := i.user.DescUser(ctx, &user.DescUserRequest{Id: inst.UserId})
+	inst.RoleSet = u.RoleSet
 
-	return nil, token.ErrTokenExpired(errors.New("token expired"))
+	return inst, nil
 }

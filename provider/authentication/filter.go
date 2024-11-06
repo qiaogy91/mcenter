@@ -1,7 +1,6 @@
 package authentication
 
 import (
-	"errors"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/qiaogy91/ioc/utils"
 	"github.com/qiaogy91/mcenter/apps/token"
@@ -13,7 +12,7 @@ func (i *Impl) Filter() restful.FilterFunction {
 		// 没有匹配到路由
 		sr := r.SelectedRoute()
 		if sr == nil {
-			utils.SendFailed(w, ErrRouteSelect(errors.New("selected route is nil")))
+			chain.ProcessFilter(r, w)
 			return
 		}
 

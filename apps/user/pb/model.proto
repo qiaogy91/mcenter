@@ -2,6 +2,7 @@ syntax = "proto3";
 package mcenter.user;
 option go_package = "github.com/qiaogy91/mcenter/apps/user";
 
+import "apps/role/pb/model.proto";
 
 
 message UserSet {
@@ -14,6 +15,8 @@ message User {
     Meta meta = 1;
     // @gotags: json:"spec" gorm:"embedded"
     CreateUserRequest spec = 2;
+    // @gotags: gorm:"-"
+    role.RoleSet role_set = 3;
 }
 
 message Meta {
@@ -32,4 +35,5 @@ message CreateUserRequest {
     string password = 2;
     // @gotags: gorm:"json"
     repeated int64 role_id = 3;
+
 }

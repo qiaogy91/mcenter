@@ -9,7 +9,7 @@ import (
 	"log/slog"
 )
 
-const AppName = "mcenterFilter"
+const AppName = "mcenterAuthFilter"
 
 type Impl struct {
 	ioc.ObjectImpl
@@ -25,7 +25,7 @@ func (i *Impl) Init() {
 
 	ws := gorestful.RootContainer()
 	ws.Filter(i.Filter())
-	i.log.Info("mcenterAuthenticationFilter added")
+	i.log.Info("mcenterAuthFilter added")
 }
 
 func init() {

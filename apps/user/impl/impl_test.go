@@ -60,6 +60,7 @@ func TestImpl_UpdateUser(t *testing.T) {
 			RoleId:   []int64{1, 2, 3},
 		},
 	}
+
 	ins, err := c.UpdateUser(ctx, req)
 	if err != nil {
 		t.Fatal(err)

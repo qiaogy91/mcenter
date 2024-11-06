@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package mcenter.token;
 
+import "apps/role/pb/model.proto";
+
 option go_package = "github.com/qiaogy91/mcenter/apps/token";
 
 
@@ -15,6 +17,8 @@ message Token {
     int64 created_at = 6;
     int64 access_expire_at = 7;
     int64 refresh_expire_at = 8;
+    // @gotags: gorm:"-"
+    role.RoleSet role_set = 9;
 }
 
 message TokenSet {

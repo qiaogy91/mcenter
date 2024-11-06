@@ -71,17 +71,17 @@ func TestImpl_DeleteRole(t *testing.T) {
 
 func TestImpl_QueryRole(t *testing.T) {
 	req := &role.QueryRoleRequest{
-		PageNum:   3,
+		PageNum:   1,
 		PageSize:  10,
-		QueryType: role.QueryType_QUERY_TYPE_DESC,
-		Keyword:   "管理员",
+		QueryType: role.QueryType_QUERY_TYPE_ROLE_IDS,
+		Ids:       []int64{1, 2, 3},
+		//Keyword:   "管理员",
 	}
 
 	ins, err := c.QueryRole(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("%d\n", ins.Total)
 	for _, item := range ins.Items {
 		t.Logf("%+v", item)
 	}
