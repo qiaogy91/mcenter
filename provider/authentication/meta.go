@@ -1,4 +1,4 @@
-package middleware
+package authentication
 
 func NewMetaData(d map[string]any) *MetaData { return &MetaData{data: d} }
 

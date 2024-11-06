@@ -43,18 +43,31 @@ func TestImpl_CreateUser(t *testing.T) {
 	}
 
 }
-
-func TestImpl_GetUser(t *testing.T) {
-	req := &user.GetUserRequest{Username: "qiaogy"}
-	inst, err := c.GetUser(ctx, req)
+func TestImpl_DescUser(t *testing.T) {
+	req := &user.DescUserRequest{Id: 1}
+	inst, err := c.DescUser(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("%+v", inst)
 }
-
+func TestImpl_UpdateUser(t *testing.T) {
+	req := &user.UpdateUserRequest{
+		Id: 1,
+		Spec: &user.CreateUserRequest{
+			Username: "qiaogy",
+			Password: "redhat",
+			RoleId:   []int64{1, 2, 3},
+		},
+	}
+	ins, err := c.UpdateUser(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v", ins)
+}
 func TestImpl_DeleteUser(t *testing.T) {
-	req := &user.DeleteUserRequest{Username: "qiaogy"}
+	req := &user.DeleteUserRequest{Id: 100}
 	inst, err := c.DeleteUser(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -78,32 +91,4 @@ func TestImpl_QueryUser(t *testing.T) {
 	for _, item := range inst.Items {
 		t.Logf("%+v", item)
 	}
-}
-
-func TestImpl_UpdatePassword(t *testing.T) {
-	req := &user.UpdatePasswordRequest{
-		Username:    "user_12",
-		Password:    "redhat",
-		NewPassword: "redhat.123",
-	}
-
-	inst, err := c.UpdatePassword(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("%+v", inst)
-}
-
-func TestCheckPassword(t *testing.T) {
-	inst, err := c.GetUser(ctx, &user.GetUserRequest{Username: "user_12"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("%+v", inst)
-
-	if err := inst.CheckPassword("redhat.123"); err != nil {
-		t.Fatal(err)
-	}
-
-	t.Logf("密码正确")
 }

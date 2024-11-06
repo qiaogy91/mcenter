@@ -1,4 +1,4 @@
-package middleware
+package authentication
 
 import "github.com/qiaogy91/ioc/utils"
 

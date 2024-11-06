@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/qiaogy91/mcenter/apps/user"
 )
@@ -22,50 +21,50 @@ func (i *Impl) CreateUser(ctx context.Context, req *user.CreateUserRequest) (*us
 	}
 	return ins, nil
 }
+func (i *Impl) UpdateUser(ctx context.Context, req *user.UpdateUserRequest) (*user.User, error) {
+	if err := validator.New().Struct(req); err != nil {
+		return nil, user.ErrUserValidate(err)
+	}
+
+	ins, err := i.DescUser(ctx, &user.DescUserRequest{Id: req.Id})
+	if err != nil {
+		return nil, err
+	}
+
+	ins.Spec = req.Spec
+	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("id = ?", req.Id).Updates(ins).Error; err != nil {
+		return nil, err
+	}
+	return ins, nil
+}
 
 func (i *Impl) DeleteUser(ctx context.Context, req *user.DeleteUserRequest) (*user.User, error) {
 	if err := validator.New().Struct(req); err != nil {
 		return nil, user.ErrUserValidate(err)
 	}
 
-	inst, err := i.GetUser(ctx, &user.GetUserRequest{Username: req.Username})
+	inst, err := i.DescUser(ctx, &user.DescUserRequest{Id: req.Id})
 	if err != nil {
 		return nil, err
 	}
 
-	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("username = ?", req.Username).Delete(inst).Error; err != nil {
+	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("id = ?", req.Id).Delete(inst).Error; err != nil {
 		return nil, user.ErrUserDelete(err)
 	}
 
 	return inst, nil
 }
 
-func (i *Impl) UpdatePassword(ctx context.Context, req *user.UpdatePasswordRequest) (*user.User, error) {
+func (i *Impl) DescUser(ctx context.Context, req *user.DescUserRequest) (*user.User, error) {
 	if err := validator.New().Struct(req); err != nil {
 		return nil, user.ErrUserValidate(err)
 	}
 
-	inst, err := i.GetUser(ctx, &user.GetUserRequest{Username: req.Username})
-	if err != nil {
-		return nil, err
+	ins := &user.User{}
+	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("id = ?", req.Id).First(ins).Error; err != nil {
+		return nil, user.ErrUserQuery(err)
 	}
-
-	if err := inst.CheckPassword(req.Password); err != nil {
-		return nil, user.ErrUserPasswordCheck(err)
-	}
-
-	if req.Password == req.NewPassword {
-		return nil, user.ErrUserPasswordCheck(errors.New("密码未修改"))
-	}
-
-	inst.Spec.Password = req.NewPassword
-	inst.MakePasswordHash()
-
-	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("username = ?", req.Username).Updates(inst).Error; err != nil {
-		return nil, user.ErrUserUpdate(err)
-	}
-
-	return inst, nil
+	return ins, nil
 }
 
 func (i *Impl) GetUser(ctx context.Context, req *user.GetUserRequest) (*user.User, error) {
@@ -75,11 +74,12 @@ func (i *Impl) GetUser(ctx context.Context, req *user.GetUserRequest) (*user.Use
 
 	ins := &user.User{}
 	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("username = ?", req.Username).First(ins).Error; err != nil {
-		return nil, user.ErrUserQuery(err)
+		return nil, err
 	}
-	return ins, nil
-}
 
+	return ins, nil
+
+}
 func (i *Impl) QueryUser(ctx context.Context, req *user.QueryUserRequest) (*user.UserSet, error) {
 	if err := validator.New().Struct(req); err != nil {
 		return nil, user.ErrUserValidate(err)

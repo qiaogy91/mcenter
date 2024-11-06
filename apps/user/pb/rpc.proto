@@ -8,29 +8,36 @@ option go_package = "github.com/qiaogy91/mcenter/apps/user";
 
 service Rpc {
     rpc CreateUser (CreateUserRequest) returns (User);
+    rpc UpdateUser(UpdateUserRequest)returns (User);
     rpc DeleteUser (DeleteUserRequest) returns (User);
-    rpc UpdatePassword (UpdatePasswordRequest) returns (User);
-    rpc GetUser (GetUserRequest) returns (User);
+    rpc DescUser (DescUserRequest) returns (User);
     rpc QueryUser (QueryUserRequest) returns (UserSet);
+
+    // 登录判定使用
+    rpc GetUser(GetUserRequest)returns (User);
 }
 enum QueryType {
     QUERY_TYPE_UNSPECIFIED = 0;
     QUERY_TYPE_USERNAME = 1;
 }
+message UpdateUserRequest {
+    // @gotags: validate:"required" json:"id"
+    int64 id = 1;
+    CreateUserRequest spec = 2;
+}
+
 message DeleteUserRequest {
-    // @gotags: validate:"required"
-    string username = 1;
+    // @gotags: validate:"required" json:"id"
+    int64 id = 1;
 }
-message UpdatePasswordRequest {
-    // @gotags: validate:"required"
-    string username = 1;
-    // @gotags: validate:"required"
-    string password = 2;
-    // @gotags: validate:"required"
-    string new_password = 3;
+
+message DescUserRequest {
+    // @gotags: validate:"required" json:"id"
+    int64 id = 1;
 }
+
 message GetUserRequest {
-    // @gotags: validate:"required"
+    // @gotags: validate:"required" json:"username"
     string username = 1;
 }
 message QueryUserRequest {

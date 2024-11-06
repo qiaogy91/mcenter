@@ -1,4 +1,4 @@
-package middleware
+package authentication
 
 import (
 	"github.com/qiaogy91/ioc"
@@ -25,7 +25,7 @@ func (i *Impl) Init() {
 
 	ws := gorestful.RootContainer()
 	ws.Filter(i.Filter())
-	i.log.Info("McenterFilter added")
+	i.log.Info("mcenterAuthenticationFilter added")
 }
 
 func init() {

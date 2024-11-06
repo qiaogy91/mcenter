@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/qiaogy91/ioc"
 	iocgrpc "github.com/qiaogy91/ioc/config/grpc"
+	"github.com/qiaogy91/mcenter/apps/endpoint"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
@@ -54,6 +55,8 @@ func (mc *McenterClient) Options() (opt []grpc.DialOption) {
 }
 
 func (mc *McenterClient) TokenClient() token.RpcClient { return token.NewRpcClient(mc.conn) }
+
+func (mc *McenterClient) EndpointClient() endpoint.RpcClient { return endpoint.NewRpcClient(mc.conn) }
 
 func init() {
 	ioc.Default().Registry(&McenterClient{})

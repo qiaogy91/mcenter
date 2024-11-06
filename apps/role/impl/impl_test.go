@@ -29,13 +29,13 @@ func TestImpl_CreateTable(t *testing.T) {
 }
 
 func TestImpl_CreateRole(t *testing.T) {
-
-	for i := 1; i <= 100; i++ {
+	for i := 1; i <= 3; i++ {
 		req := &role.Spec{
 			Name:        fmt.Sprintf("role_%d", i),
-			Service:     "svc01",
-			Resource:    "md01",
-			Action:      []string{"get", "list"},
+			Namespace:   "default",
+			Service:     []string{"svc01", "svc02"},
+			Resource:    []string{"md01", "md02"},
+			Actions:     []string{"get", "list"},
 			Description: "管理员",
 		}
 

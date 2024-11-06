@@ -29,12 +29,14 @@ message Meta {
 message Spec {
     // @gotags: json:"name" validate:"required"
     string name = 1;
-    // @gotags: json:"service" validate:"required"
-    string service = 2;
-    // @gotags: json:"resource" validate:"required"
-    string resource = 3;
-    // @gotags: json:"action" validate:"required" gorm:"json"
-    repeated string action = 4;
+    // @gotags: json:"namespace" validate:"required"
+    string namespace = 2;
+    // @gotags: json:"service" validate:"required" gorm:"json"
+    repeated string service = 3;
+    // @gotags: json:"resource" validate:"required" gorm:"json"
+    repeated string resource = 4;
+    // @gotags: json:"actions" validate:"required" gorm:"json"
+    repeated string actions = 5;
     // @gotags: json:"description" validate:"required"
-    string description = 5;
+    string description = 6;
 }

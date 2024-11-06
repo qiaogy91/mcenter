@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Rpc_CreateUser_FullMethodName     = "/mcenter.user.Rpc/CreateUser"
-	Rpc_DeleteUser_FullMethodName     = "/mcenter.user.Rpc/DeleteUser"
-	Rpc_UpdatePassword_FullMethodName = "/mcenter.user.Rpc/UpdatePassword"
-	Rpc_GetUser_FullMethodName        = "/mcenter.user.Rpc/GetUser"
-	Rpc_QueryUser_FullMethodName      = "/mcenter.user.Rpc/QueryUser"
+	Rpc_CreateUser_FullMethodName = "/mcenter.user.Rpc/CreateUser"
+	Rpc_UpdateUser_FullMethodName = "/mcenter.user.Rpc/UpdateUser"
+	Rpc_DeleteUser_FullMethodName = "/mcenter.user.Rpc/DeleteUser"
+	Rpc_DescUser_FullMethodName   = "/mcenter.user.Rpc/DescUser"
+	Rpc_QueryUser_FullMethodName  = "/mcenter.user.Rpc/QueryUser"
+	Rpc_GetUser_FullMethodName    = "/mcenter.user.Rpc/GetUser"
 )
 
 // RpcClient is the client API for Rpc service.
@@ -31,10 +32,12 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RpcClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*User, error)
-	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*User, error)
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
+	DescUser(ctx context.Context, in *DescUserRequest, opts ...grpc.CallOption) (*User, error)
 	QueryUser(ctx context.Context, in *QueryUserRequest, opts ...grpc.CallOption) (*UserSet, error)
+	// 登录判定使用
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
 }
 
 type rpcClient struct {
@@ -54,6 +57,15 @@ func (c *rpcClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts 
 	return out, nil
 }
 
+func (c *rpcClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, Rpc_UpdateUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *rpcClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, Rpc_DeleteUser_FullMethodName, in, out, opts...)
@@ -63,18 +75,9 @@ func (c *rpcClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts 
 	return out, nil
 }
 
-func (c *rpcClient) UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*User, error) {
+func (c *rpcClient) DescUser(ctx context.Context, in *DescUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, Rpc_UpdatePassword_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
-	err := c.cc.Invoke(ctx, Rpc_GetUser_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rpc_DescUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,15 +93,26 @@ func (c *rpcClient) QueryUser(ctx context.Context, in *QueryUserRequest, opts ..
 	return out, nil
 }
 
+func (c *rpcClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, Rpc_GetUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RpcServer is the server API for Rpc service.
 // All implementations must embed UnimplementedRpcServer
 // for forward compatibility
 type RpcServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*User, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*User, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*User, error)
-	UpdatePassword(context.Context, *UpdatePasswordRequest) (*User, error)
-	GetUser(context.Context, *GetUserRequest) (*User, error)
+	DescUser(context.Context, *DescUserRequest) (*User, error)
 	QueryUser(context.Context, *QueryUserRequest) (*UserSet, error)
+	// 登录判定使用
+	GetUser(context.Context, *GetUserRequest) (*User, error)
 	mustEmbedUnimplementedRpcServer()
 }
 
@@ -109,17 +123,20 @@ type UnimplementedRpcServer struct {
 func (UnimplementedRpcServer) CreateUser(context.Context, *CreateUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
+func (UnimplementedRpcServer) UpdateUser(context.Context, *UpdateUserRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
 func (UnimplementedRpcServer) DeleteUser(context.Context, *DeleteUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedRpcServer) UpdatePassword(context.Context, *UpdatePasswordRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePassword not implemented")
-}
-func (UnimplementedRpcServer) GetUser(context.Context, *GetUserRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+func (UnimplementedRpcServer) DescUser(context.Context, *DescUserRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescUser not implemented")
 }
 func (UnimplementedRpcServer) QueryUser(context.Context, *QueryUserRequest) (*UserSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryUser not implemented")
+}
+func (UnimplementedRpcServer) GetUser(context.Context, *GetUserRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 func (UnimplementedRpcServer) mustEmbedUnimplementedRpcServer() {}
 
@@ -152,6 +169,24 @@ func _Rpc_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rpc_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RpcServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rpc_UpdateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RpcServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Rpc_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteUserRequest)
 	if err := dec(in); err != nil {
@@ -170,38 +205,20 @@ func _Rpc_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rpc_UpdatePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdatePasswordRequest)
+func _Rpc_DescUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RpcServer).UpdatePassword(ctx, in)
+		return srv.(RpcServer).DescUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rpc_UpdatePassword_FullMethodName,
+		FullMethod: Rpc_DescUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).UpdatePassword(ctx, req.(*UpdatePasswordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).GetUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Rpc_GetUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).GetUser(ctx, req.(*GetUserRequest))
+		return srv.(RpcServer).DescUser(ctx, req.(*DescUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -224,6 +241,24 @@ func _Rpc_QueryUser_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rpc_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RpcServer).GetUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Rpc_GetUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RpcServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Rpc_ServiceDesc is the grpc.ServiceDesc for Rpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -236,20 +271,24 @@ var Rpc_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Rpc_CreateUser_Handler,
 		},
 		{
+			MethodName: "UpdateUser",
+			Handler:    _Rpc_UpdateUser_Handler,
+		},
+		{
 			MethodName: "DeleteUser",
 			Handler:    _Rpc_DeleteUser_Handler,
 		},
 		{
-			MethodName: "UpdatePassword",
-			Handler:    _Rpc_UpdatePassword_Handler,
-		},
-		{
-			MethodName: "GetUser",
-			Handler:    _Rpc_GetUser_Handler,
+			MethodName: "DescUser",
+			Handler:    _Rpc_DescUser_Handler,
 		},
 		{
 			MethodName: "QueryUser",
 			Handler:    _Rpc_QueryUser_Handler,
+		},
+		{
+			MethodName: "GetUser",
+			Handler:    _Rpc_GetUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
