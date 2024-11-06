@@ -15,13 +15,13 @@ func (i *Impl) Filter() restful.FilterFunction {
 			return
 		}
 		meta := NewMeta(sr.Metadata())
-		authEnable := meta.GetBool(PermKey)
-		if !authEnable {
+		permEnable := meta.GetBool(PermKey)
+		if !permEnable {
 			chain.ProcessFilter(r, w)
 			return
 		}
 
-		tk := r.Attribute("token").(*token.Token)
+		tk := r.Attribute(AttrTokenKey).(*token.Token)
 		if !tk.RoleSet.ValidatePermission(i.app, meta.GetString(ResourceKey), meta.GetString(ActionKey)) {
 			utils.SendFailed(w, ErrPermUnauthorized(errors.New("权限校验失败")))
 			return

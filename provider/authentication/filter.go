@@ -17,21 +17,23 @@ func (i *Impl) Filter() restful.FilterFunction {
 		}
 
 		// 元数据
-		md := NewMetaData(sr.Metadata())
-
-		// 开启认证
-		if md.GetBool("auth") {
-			ak := r.Request.Header.Get("Authorization")
-			in := &token.ValidateTokenRequest{AccessToken: ak}
-			tk, err := i.c.ValidateToken(r.Request.Context(), in)
-			if err != nil {
-				utils.SendFailed(w, ErrTokenAuth(err))
-				return
-			}
-
-			r.SetAttribute("token", tk)
+		meta := NewMetaData(sr.Metadata())
+		authEnable := meta.GetBool(AuthKey)
+		if !authEnable {
+			chain.ProcessFilter(r, w)
+			return
 		}
 
+		// 开启了认证
+		ak := r.Request.Header.Get(AuthHeader)
+		in := &token.ValidateTokenRequest{AccessToken: ak}
+		tk, err := i.c.ValidateToken(r.Request.Context(), in)
+		if err != nil {
+			utils.SendFailed(w, ErrTokenAuth(err))
+			return
+		}
+
+		r.SetAttribute(AttrTokenKey, tk)
 		chain.ProcessFilter(r, w)
 	}
 }
