@@ -24,8 +24,17 @@ func (i *Impl) Filter() restful.FilterFunction {
 			return
 		}
 
-		// 开启了认证
+		// 开启了认证，优先从Header 中读取、如果找不到再取Cookie 中读取
 		ak := r.Request.Header.Get(AuthHeader)
+		if ak == "" {
+			cookie, err := r.Request.Cookie(AttrTokenKey)
+			if err != nil {
+				utils.SendFailed(w, ErrReadCookie(err))
+				return
+			}
+			ak = cookie.Value
+		}
+
 		in := &token.ValidateTokenRequest{AccessToken: ak}
 		tk, err := i.c.ValidateToken(r.Request.Context(), in)
 		if err != nil {
