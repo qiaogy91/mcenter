@@ -20,11 +20,19 @@ enum QueryType {
     QUERY_TYPE_UNSPECIFIED = 0;
     QUERY_TYPE_USERNAME = 1;
 }
+
+enum IssueType {
+    ISSUE_TYPE_UNSPECIFIED = 0;
+    ISSUE_TYPE_ACCOUNT = 1;
+    ISSUE_TYPE_FEISHU = 2;
+}
+
 message IssueTokenRequest {
-    // @gotags: validate:"required"
-    string username = 1;
-    // @gotags: validate:"required"
-    string password = 2;
+    IssueType issue_type = 1;
+    string username = 2;
+    string password = 3;
+    string code = 4;
+    string state = 5;
 }
 message DeleteTokenRequest {
     // @gotags: validate:"required"

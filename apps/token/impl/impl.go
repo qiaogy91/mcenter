@@ -16,10 +16,9 @@ var _ token.Service = &Impl{}
 type Impl struct {
 	ioc.ObjectImpl
 	token.UnimplementedRpcServer
-	log  *slog.Logger
-	db   *gorm.DB
-	svc  user.Service
-	user user.Service
+	log *slog.Logger
+	db  *gorm.DB
+	usv user.Service
 }
 
 func (i *Impl) Name() string  { return token.AppName }
@@ -27,8 +26,7 @@ func (i *Impl) Priority() int { return 399 }
 func (i *Impl) Init() {
 	i.log = log.Sub(token.AppName)
 	i.db = datasource.DB()
-	i.svc = user.GetSvc()
-	i.user = user.GetSvc()
+	i.usv = user.GetSvc()
 
 	i.grpcRegistry()
 }

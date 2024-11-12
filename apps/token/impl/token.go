@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-playground/validator/v10"
 	"github.com/qiaogy91/mcenter/apps/token"
+	"github.com/qiaogy91/mcenter/apps/token/provider"
 	"github.com/qiaogy91/mcenter/apps/user"
 	"time"
 )
@@ -13,21 +14,20 @@ func (i *Impl) CreateTable(ctx context.Context) error {
 }
 
 func (i *Impl) IssueToken(ctx context.Context, req *token.IssueTokenRequest) (*token.Token, error) {
-	if err := validator.New().Struct(req); err != nil {
-		return nil, err
-	}
-
-	r := &user.GetUserRequest{Username: req.Username}
-	u, err := i.svc.GetUser(ctx, r)
+	// 1. 调用各种Provider 来进行验证，返回User
+	handler, err := provider.GetSvc().Get(req.IssueType)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := u.CheckPassword(req.Password); err != nil {
+	// 2. 调用具体对象的校验方法（飞书、钉钉、账号密码）
+	usr, err := handler.IssueToken(ctx, req)
+	if err != nil {
 		return nil, err
 	}
 
-	ins := token.NewToken(u)
+	// 3. 创建Token
+	ins := token.NewToken(usr)
 	if err := i.db.WithContext(ctx).Model(&token.Token{}).Create(ins).Error; err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (i *Impl) QueryToken(ctx context.Context, req *token.QueryTokenRequest) (*t
 
 	switch req.QueryType {
 	case token.QueryType_QUERY_TYPE_USERNAME:
-		u, err := i.svc.GetUser(ctx, &user.GetUserRequest{Username: req.Keyword})
+		u, err := i.usv.GetUser(ctx, &user.GetUserRequest{Username: req.Keyword})
 		if err != nil {
 			return nil, err
 		}
@@ -139,7 +139,7 @@ func (i *Impl) ValidateToken(ctx context.Context, req *token.ValidateTokenReques
 	}
 
 	// 4. 补充角色信息
-	u, err := i.user.DescUser(ctx, &user.DescUserRequest{Id: inst.UserId})
+	u, err := i.usv.DescUser(ctx, &user.DescUserRequest{Id: inst.UserId})
 	inst.RoleSet = u.RoleSet
 
 	return inst, nil
