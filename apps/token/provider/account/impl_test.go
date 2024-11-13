@@ -1,4 +1,4 @@
-package impl_test
+package account_test
 
 import (
 	"context"
@@ -7,25 +7,18 @@ import (
 	_ "github.com/qiaogy91/mcenter/apps"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"github.com/qiaogy91/mcenter/apps/token/provider"
-	"github.com/qiaogy91/mcenter/apps/token/provider/account"
 	"testing"
 )
 
 var (
 	ctx = context.Background()
-	c   account.Service
+	c   = provider.GetProvider(token.IssueType_ISSUE_TYPE_ACCOUNT)
 )
 
 func init() {
 	if err := ioc.ConfigIocObject("/Users/qiaogy/GolandProjects/projects/github/CloudManager/mcenter/etc/application.yaml"); err != nil {
 		panic(err)
 	}
-
-	ins, err := provider.GetSvc().Get(account.Type)
-	if err != nil {
-		panic(err)
-	}
-	c = ins
 }
 
 func TestImpl_IssueToken(t *testing.T) {

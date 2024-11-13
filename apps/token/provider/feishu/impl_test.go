@@ -1,4 +1,4 @@
-package impl_test
+package feishu_test
 
 import (
 	"context"
@@ -7,13 +7,12 @@ import (
 	_ "github.com/qiaogy91/mcenter/apps"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"github.com/qiaogy91/mcenter/apps/token/provider"
-	"github.com/qiaogy91/mcenter/apps/token/provider/feishu"
 	"testing"
 )
 
 var (
 	ctx = context.Background()
-	c   feishu.Service
+	c   = provider.GetProvider(token.IssueType_ISSUE_TYPE_FEISHU)
 )
 
 func init() {
@@ -21,18 +20,12 @@ func init() {
 	if err := ioc.ConfigIocObject(cf); err != nil {
 		panic(err)
 	}
-
-	ins, err := provider.GetSvc().Get(feishu.Type)
-	if err != nil {
-		panic(err)
-	}
-	c = ins
 }
 
 func TestImpl_IssueToken(t *testing.T) {
 	req := &token.IssueTokenRequest{
 		IssueType: token.IssueType_ISSUE_TYPE_FEISHU,
-		Code:      "6f0m034afdcc41e6842722fa3af6f88b",
+		Code:      "8f7sa1ad27124bea821ba028a315186a",
 		State:     "STATE",
 	}
 

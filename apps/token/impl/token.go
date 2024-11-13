@@ -15,10 +15,7 @@ func (i *Impl) CreateTable(ctx context.Context) error {
 
 func (i *Impl) IssueToken(ctx context.Context, req *token.IssueTokenRequest) (*token.Token, error) {
 	// 1. 调用各种Provider 来进行验证，返回User
-	handler, err := provider.GetSvc().Get(req.IssueType)
-	if err != nil {
-		return nil, err
-	}
+	handler := provider.GetProvider(req.IssueType)
 
 	// 2. 调用具体对象的校验方法（飞书、钉钉、账号密码）
 	usr, err := handler.IssueToken(ctx, req)

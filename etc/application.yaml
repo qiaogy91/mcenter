@@ -41,12 +41,13 @@ mcenterClient:
   token: "mcenter-token"
 
 
-tokenProvider:
-  # 润工作
-#  appID: "cli_9e063da4943a1008"
-#  appSecret: "DTRJz5iWdqbjZEbCE6FB8waYQzYEMexH"
-#  baseUrl: "https://open.rwork.crc.com.cn"
-  # 自建
-  appID: "cli_a67e7234b5bd100d"
-  appSecret: "qvYXwDwg6A2sygtV6RJI0IOUNYtTX8vo"
-  baseUrl: "https://open.feishu.cn"
+token:
+  provider:
+    feishu:
+      appID: "cli_a67e7234b5bd100d"
+      appSecret: "qvYXwDwg6A2sygtV6RJI0IOUNYtTX8vo"
+      baseUrl: "https://open.feishu.cn"
+#      润工作
+#      appID: "cli_9e063da4943a1008"
+#      appSecret: "DTRJz5iWdqbjZEbCE6FB8waYQzYEMexH"
+#      baseUrl: "https://open.rwork.crc.com.cn"
