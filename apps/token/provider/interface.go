@@ -29,12 +29,12 @@ var (
 		}
 		return v
 	}
-)
 
-func Init(conf Conf) {
-	l := log.Sub(AppName)
-	for _, o := range container {
-		o.Init(conf)
-		l.Info("add provider", slog.String("name", o.Name()), slog.Any("type", o.Type()))
+	InitProvider = func(conf Conf) {
+		l := log.Sub(AppName)
+		for _, o := range container {
+			o.Init(conf)
+			l.Info("add provider", slog.String("name", o.Name()), slog.Any("type", o.Type()))
+		}
 	}
-}
+)

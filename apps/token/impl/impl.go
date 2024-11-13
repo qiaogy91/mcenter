@@ -31,7 +31,7 @@ func (i *Impl) Init() {
 	i.usv = user.GetSvc()
 
 	// 各provider 开始初始化
-	provider.Init(i.Provider)
+	provider.InitProvider(i.Provider)
 
 	i.grpcRegistry()
 }
