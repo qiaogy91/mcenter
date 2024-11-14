@@ -19,15 +19,15 @@ type Provider interface {
 }
 
 var (
-	containerLogger = log.Sub(AppName)
-	container       = make(map[token.IssueType]Provider)
-	AddProvider     = func(o Provider) { container[o.Type()] = o }
-	GetProvider     = func(t token.IssueType) Provider { return container[t] }
+	container   = make(map[token.IssueType]Provider)
+	AddProvider = func(o Provider) { container[o.Type()] = o }
+	GetProvider = func(t token.IssueType) Provider { return container[t] }
 
 	InitProvider = func(conf Conf) {
+		logger := log.Sub(AppName)
 		for _, o := range container {
 			o.Init(conf)
-			containerLogger.Info("add provider", slog.String("name", o.Name()), slog.Any("type", o.Type()))
+			logger.Info("add provider", slog.String("name", o.Name()), slog.Any("type", o.Type()))
 		}
 	}
 )
