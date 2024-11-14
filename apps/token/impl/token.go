@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"github.com/qiaogy91/mcenter/apps/token/provider"
@@ -16,6 +17,9 @@ func (i *Impl) CreateTable(ctx context.Context) error {
 func (i *Impl) IssueToken(ctx context.Context, req *token.IssueTokenRequest) (*token.Token, error) {
 	// 1. 调用各种Provider 来进行验证，返回User
 	handler := provider.GetProvider(req.IssueType)
+	if handler == nil {
+		return nil, fmt.Errorf("no such provider, bacuse %v not added", req.IssueType)
+	}
 
 	// 2. 调用具体对象的校验方法（飞书、钉钉、账号密码）
 	usr, err := handler.IssueToken(ctx, req)

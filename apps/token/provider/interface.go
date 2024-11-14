@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"github.com/qiaogy91/ioc/config/log"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"github.com/qiaogy91/mcenter/apps/user"
@@ -20,21 +19,15 @@ type Provider interface {
 }
 
 var (
-	container   = make(map[token.IssueType]Provider)
-	AddProvider = func(o Provider) { container[o.Type()] = o }
-	GetProvider = func(t token.IssueType) Provider {
-		v, ok := container[t]
-		if !ok {
-			panic(fmt.Errorf("get provider err, because provider not added"))
-		}
-		return v
-	}
+	containerLogger = log.Sub(AppName)
+	container       = make(map[token.IssueType]Provider)
+	AddProvider     = func(o Provider) { container[o.Type()] = o }
+	GetProvider     = func(t token.IssueType) Provider { return container[t] }
 
 	InitProvider = func(conf Conf) {
-		l := log.Sub(AppName)
 		for _, o := range container {
 			o.Init(conf)
-			l.Info("add provider", slog.String("name", o.Name()), slog.Any("type", o.Type()))
+			containerLogger.Info("add provider", slog.String("name", o.Name()), slog.Any("type", o.Type()))
 		}
 	}
 )
