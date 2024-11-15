@@ -40,19 +40,10 @@ func (h *Handler) DescRole(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) QueryRole(r *restful.Request, w *restful.Response) {
-	num, err := strconv.ParseInt(r.QueryParameter("pageNum"), 10, 64)
-	size, err := strconv.ParseInt(r.QueryParameter("pageSize"), 10, 64)
-	t, err := strconv.ParseInt(r.QueryParameter("queryType"), 10, 64)
-	if err != nil {
+	req := &role.QueryRoleRequest{}
+	if err := utils.Decoder.Decode(req, r.Request.URL.Query()); err != nil {
 		utils.SendFailed(w, ErrUserQueryParams(err))
 		return
-	}
-
-	req := &role.QueryRoleRequest{
-		PageNum:   num,
-		PageSize:  size,
-		QueryType: role.QueryType(t),
-		Keyword:   r.QueryParameter("keyword"),
 	}
 
 	ins, err := h.svc.QueryRole(r.Request.Context(), req)
@@ -62,7 +53,6 @@ func (h *Handler) QueryRole(r *restful.Request, w *restful.Response) {
 	}
 
 	utils.SendSuccess(w, ins)
-
 }
 
 func (h *Handler) DeleteRole(r *restful.Request, w *restful.Response) {

@@ -66,20 +66,10 @@ func (h *Handler) UpdateUser(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) QueryUser(r *restful.Request, w *restful.Response) {
-
-	num, err := strconv.ParseInt(r.QueryParameter("pageNum"), 10, 64)
-	size, err := strconv.ParseInt(r.QueryParameter("pageSize"), 10, 64)
-	t, err := strconv.ParseInt(r.QueryParameter("queryType"), 10, 64)
-	if err != nil {
+	req := &user.QueryUserRequest{}
+	if err := utils.Decoder.Decode(req, r.Request.URL.Query()); err != nil {
 		utils.SendFailed(w, ErrUserQueryParams(err))
 		return
-	}
-
-	req := &user.QueryUserRequest{
-		PageNum:   num,
-		PageSize:  size,
-		QueryType: user.QueryType(t),
-		Keyword:   r.QueryParameter("keyword"),
 	}
 
 	ins, err := h.svc.QueryUser(r.Request.Context(), req)

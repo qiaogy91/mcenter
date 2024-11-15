@@ -4,7 +4,6 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/qiaogy91/ioc/utils"
 	"github.com/qiaogy91/mcenter/apps/token"
-	"strconv"
 )
 
 func (h *Handler) DeleteToken(r *restful.Request, w *restful.Response) {
@@ -24,19 +23,11 @@ func (h *Handler) DeleteToken(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) QueryToken(r *restful.Request, w *restful.Response) {
-	num, err := strconv.ParseInt(r.QueryParameter("pageNum"), 10, 64)
-	size, err := strconv.ParseInt(r.QueryParameter("pageSize"), 10, 64)
-	t, err := strconv.ParseInt(r.QueryParameter("queryType"), 10, 64)
-	if err != nil {
+
+	req := &token.QueryTokenRequest{}
+	if err := utils.Decoder.Decode(req, r.Request.URL.Query()); err != nil {
 		utils.SendFailed(w, ErrQueryTokenRequest(err))
 		return
-	}
-
-	req := &token.QueryTokenRequest{
-		PageNum:   num,
-		PageSize:  size,
-		QueryType: token.QueryType(t),
-		Keyword:   r.QueryParameter("keyword"),
 	}
 
 	ins, err := h.svc.QueryToken(r.Request.Context(), req)
