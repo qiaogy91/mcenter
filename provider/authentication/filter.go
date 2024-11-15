@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"github.com/emicklei/go-restful/v3"
+	"github.com/qiaogy91/ioc/labels"
 	"github.com/qiaogy91/ioc/utils"
 	"github.com/qiaogy91/mcenter/apps/token"
 )
@@ -18,16 +19,16 @@ func (i *Impl) Filter() restful.FilterFunction {
 
 		// 元数据
 		meta := NewMetaData(sr.Metadata())
-		authEnable := meta.GetBool(AuthKey)
+		authEnable := meta.GetBool(labels.AuthEnabled)
 		if !authEnable {
 			chain.ProcessFilter(r, w)
 			return
 		}
 
 		// 开启了认证，优先从Header 中读取、如果找不到再取Cookie 中读取
-		ak := r.Request.Header.Get(AuthHeader)
+		ak := r.Request.Header.Get(labels.HttpAuthHeaderKey)
 		if ak == "" {
-			cookie, err := r.Request.Cookie(AttrTokenKey)
+			cookie, err := r.Request.Cookie(labels.HttpAuthCookieKey)
 			if err != nil {
 				utils.SendFailed(w, ErrReadCookie(err))
 				return
@@ -42,7 +43,7 @@ func (i *Impl) Filter() restful.FilterFunction {
 			return
 		}
 
-		r.SetAttribute(AttrTokenKey, tk)
+		r.SetAttribute(labels.ContextTokenKey, tk)
 		chain.ProcessFilter(r, w)
 	}
 }

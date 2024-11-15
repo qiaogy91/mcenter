@@ -18,7 +18,7 @@ type Impl struct {
 }
 
 func (i *Impl) Name() string  { return endpoint.AppName }
-func (i *Impl) Priority() int { return 399 }
+func (i *Impl) Priority() int { return 301 }
 func (i *Impl) Init() {
 	i.log = log.Sub(endpoint.AppName)
 	i.db = datasource.DB()

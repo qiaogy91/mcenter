@@ -71,7 +71,7 @@ func (i *Impl) DescUser(ctx context.Context, req *user.DescUserRequest) (*user.U
 		PageNum:   1,
 		PageSize:  1000,
 		QueryType: role.QueryType_QUERY_TYPE_ROLE_IDS,
-		Ids:       ins.Spec.RoleId,
+		Keyword:   ins.RoleStringIds(),
 	}
 	roleSet, err := i.role.QueryRole(ctx, in)
 	if err != nil {

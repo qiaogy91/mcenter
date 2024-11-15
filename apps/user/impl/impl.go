@@ -21,7 +21,7 @@ type Impl struct {
 }
 
 func (i *Impl) Name() string  { return user.AppName }
-func (i *Impl) Priority() int { return 399 }
+func (i *Impl) Priority() int { return 304 }
 func (i *Impl) Init() {
 	i.log = log.Sub(user.AppName)
 	i.db = datasource.DB()

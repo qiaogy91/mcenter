@@ -5,6 +5,7 @@ import (
 	"github.com/qiaogy91/ioc"
 	"github.com/qiaogy91/ioc/config/gorestful"
 	"github.com/qiaogy91/ioc/config/log"
+	"github.com/qiaogy91/ioc/labels"
 	"github.com/qiaogy91/mcenter/apps/token"
 	"log/slog"
 )
@@ -16,7 +17,7 @@ type Handler struct {
 }
 
 func (h *Handler) Name() string  { return token.AppName }
-func (h *Handler) Priority() int { return 401 }
+func (h *Handler) Priority() int { return 403 }
 func (h *Handler) Init() {
 	h.log = log.Sub(token.AppName)
 	h.svc = token.GetSvc()
@@ -25,31 +26,56 @@ func (h *Handler) Init() {
 }
 
 func (h *Handler) registry() {
-	tag := []string{"令牌管理"}
+	tags := []string{"令牌管理"}
 
+	// 颁发令牌
 	ws := gorestful.ModuleWebservice(h)
 	ws.Route(ws.POST("account/login").To(h.AccountLogin).
-		Doc("账号登录").
-		Metadata(restfulspec.KeyOpenAPITags, tag),
+		Doc("颁发令牌(账号登录)").
+		Metadata(restfulspec.KeyOpenAPITags, tags),
 	)
-
 	ws.Route(ws.GET("feishu/login").To(h.FeishuLogin).
-		Doc("飞书登录").
-		Metadata(restfulspec.KeyOpenAPITags, tag),
+		Doc("颁发令牌(飞书登录)").
+		Metadata(restfulspec.KeyOpenAPITags, tags),
 	)
 
-	// todo
-	// 1. 颁发令牌
-	// 2. 撤销令牌
-	// 3. 校验令牌
-	// 4. 令牌颁发记录
+	// 令牌撤销
+	ws.Route(ws.GET("/").To(h.DeleteToken).
+		Doc("令牌撤销").
+		Metadata(labels.ApiTags, tags).
+		Reads(token.DeleteTokenRequest{}).
+		Returns(200, "令牌对象", token.Token{}))
 
-	for _, ws := range gorestful.RootContainer().RegisteredWebServices() {
-		for _, r := range ws.Routes() {
-			h.log.Info("Registry", slog.String("doc", r.Doc), slog.String("method", r.Method), slog.String("path", r.Path))
-		}
-	}
+	// 令牌查询
+	ws.Route(ws.GET("/").To(h.QueryToken).
+		Doc("令牌查询").
+		Metadata(labels.ApiTags, tags).
+		Reads(token.QueryTokenRequest{}).
+		Returns(200, "令牌列表", token.TokenSet{}))
+
+	// 令牌校验
+	ws.Route(ws.GET("/").To(h.ValidateToken).
+		Doc("令牌校验").
+		Metadata(labels.ApiTags, tags).
+		Reads(token.ValidateTokenRequest{}).
+		Returns(200, "令牌对象", token.Token{}))
+
+	// 令牌刷新
+	ws.Route(ws.GET("/").To(h.RefreshToken).
+		Doc("令牌刷新").
+		Metadata(labels.ApiTags, tags).
+		Reads(token.RefreshTokenRequest{}).
+		Returns(200, "令牌对象", token.Token{}))
+
+	// 令牌详情
+	ws.Route(ws.GET("/").To(h.GetToken).
+		Doc("令牌详情").
+		Metadata(labels.ApiTags, tags).
+		Reads(token.GetTokenRequest{}).
+		Returns(200, "令牌对象", token.Token{}))
+
 }
+
 func init() {
 	ioc.Api().Registry(&Handler{})
 }

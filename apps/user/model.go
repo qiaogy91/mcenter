@@ -1,6 +1,10 @@
 package user
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+	"strconv"
+	"strings"
+)
 
 func NewUser(req *CreateUserRequest) *User {
 	ins := &User{Spec: req}
@@ -18,4 +22,13 @@ func (u *User) MakePasswordHash() {
 
 func (u *User) CheckPassword(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(u.Spec.Password), []byte(password))
+}
+
+func (u *User) RoleStringIds() string {
+	arr := make([]string, len(u.Spec.RoleId))
+	for _, item := range u.Spec.RoleId {
+		arr = append(arr, strconv.FormatInt(item, 10))
+	}
+
+	return strings.Join(arr, ",")
 }

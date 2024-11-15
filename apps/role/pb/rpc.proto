@@ -28,7 +28,6 @@ message QueryRoleRequest {
     int64 page_size = 2;
     QueryType query_type = 3;
     string keyword = 4;
-    repeated int64 ids = 5;
 }
 
 message DescRoleRequest {

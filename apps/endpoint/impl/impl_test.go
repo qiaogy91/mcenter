@@ -44,7 +44,7 @@ func TestImpl_CreateEndpoint(t *testing.T) {
 					Resource: fmt.Sprintf("md_%d", j),
 					Action:   action,
 					Identity: fmt.Sprintf("svc_%d.md_%d.%s./md01/api/v1/secret", i, j, action),
-					Doc:      "测试",
+					Desc:     "测试",
 				}
 				specs = append(specs, spec)
 			}

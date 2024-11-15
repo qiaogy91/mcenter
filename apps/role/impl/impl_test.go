@@ -74,7 +74,6 @@ func TestImpl_QueryRole(t *testing.T) {
 		PageNum:   1,
 		PageSize:  10,
 		QueryType: role.QueryType_QUERY_TYPE_ROLE_IDS,
-		Ids:       []int64{1, 2, 3},
 		//Keyword:   "管理员",
 	}
 

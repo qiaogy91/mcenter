@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-playground/validator/v10"
 	"github.com/qiaogy91/mcenter/apps/role"
+	"strings"
 )
 
 func (i *Impl) CreateTable(ctx context.Context) error {
@@ -51,7 +52,7 @@ func (i *Impl) QueryRole(ctx context.Context, req *role.QueryRoleRequest) (*role
 	case role.QueryType_QUERY_TYPE_DESC:
 		sql = sql.Where("description like ?", "%"+req.Keyword+"%")
 	case role.QueryType_QUERY_TYPE_ROLE_IDS:
-		sql = sql.Where("id in ?", req.Ids)
+		sql = sql.Where("id in ?", strings.Split(req.Keyword, ","))
 	}
 
 	if err := sql.Count(&ins.Total).Offset(offset).Limit(limit).Find(&ins.Items).Error; err != nil {

@@ -7,6 +7,7 @@ import (
 	"github.com/qiaogy91/ioc/config/application"
 	"github.com/qiaogy91/ioc/config/gorestful"
 	"github.com/qiaogy91/ioc/config/log"
+	"github.com/qiaogy91/ioc/labels"
 	"github.com/qiaogy91/mcenter/apps/endpoint"
 	"github.com/qiaogy91/mcenter/provider/client"
 	"log/slog"
@@ -52,8 +53,8 @@ func (i *Impl) EndpointSpecSet() *endpoint.EndpointSpecSet {
 
 			meta := NewMetaData(r.Metadata)
 			resource := strings.Trim(ws.RootPath(), "/")
-			action := meta.GetString("action")
-			doc := meta.GetString("doc")
+			action := meta.GetString(labels.Action)
+			doc := meta.GetString(labels.Desc)
 
 			// 强制限制路由元数据必须包含 resource、action、doc
 			if resource == "" || action == "" || doc == "" {
@@ -65,7 +66,7 @@ func (i *Impl) EndpointSpecSet() *endpoint.EndpointSpecSet {
 				Resource: resource,
 				Action:   action,
 				Identity: fmt.Sprintf("%s.%s.%s.%s", svc, resource, r.Method, r.Path),
-				Doc:      doc,
+				Desc:     doc,
 			})
 		}
 	}

@@ -50,6 +50,6 @@ message Spec {
 
     // 端点描述
     // @gotags: json:"desc" validate:"required"
-    string doc = 6;
+    string desc = 6;
 }
 
