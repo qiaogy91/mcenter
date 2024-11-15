@@ -34,6 +34,7 @@ func (i *Impl) UpdateUser(ctx context.Context, req *user.UpdateUserRequest) (*us
 
 	ins.Spec = req.Spec
 	ins.MakePasswordHash()
+
 	if err := i.db.WithContext(ctx).Model(&user.User{}).Where("id = ?", req.Id).Updates(ins).Error; err != nil {
 		return nil, err
 	}

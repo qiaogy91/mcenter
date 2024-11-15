@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Rpc_IssueToken_FullMethodName    = "/mcenter.token.Rpc/IssueToken"
 	Rpc_DeleteToken_FullMethodName   = "/mcenter.token.Rpc/DeleteToken"
-	Rpc_GetToken_FullMethodName      = "/mcenter.token.Rpc/GetToken"
+	Rpc_DescToken_FullMethodName     = "/mcenter.token.Rpc/DescToken"
 	Rpc_QueryToken_FullMethodName    = "/mcenter.token.Rpc/QueryToken"
 	Rpc_RefreshToken_FullMethodName  = "/mcenter.token.Rpc/RefreshToken"
 	Rpc_ValidateToken_FullMethodName = "/mcenter.token.Rpc/ValidateToken"
@@ -33,7 +33,7 @@ const (
 type RpcClient interface {
 	IssueToken(ctx context.Context, in *IssueTokenRequest, opts ...grpc.CallOption) (*Token, error)
 	DeleteToken(ctx context.Context, in *DeleteTokenRequest, opts ...grpc.CallOption) (*Token, error)
-	GetToken(ctx context.Context, in *GetTokenRequest, opts ...grpc.CallOption) (*Token, error)
+	DescToken(ctx context.Context, in *DescTokenRequest, opts ...grpc.CallOption) (*Token, error)
 	QueryToken(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*TokenSet, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*Token, error)
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*Token, error)
@@ -65,9 +65,9 @@ func (c *rpcClient) DeleteToken(ctx context.Context, in *DeleteTokenRequest, opt
 	return out, nil
 }
 
-func (c *rpcClient) GetToken(ctx context.Context, in *GetTokenRequest, opts ...grpc.CallOption) (*Token, error) {
+func (c *rpcClient) DescToken(ctx context.Context, in *DescTokenRequest, opts ...grpc.CallOption) (*Token, error) {
 	out := new(Token)
-	err := c.cc.Invoke(ctx, Rpc_GetToken_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Rpc_DescToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (c *rpcClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest,
 type RpcServer interface {
 	IssueToken(context.Context, *IssueTokenRequest) (*Token, error)
 	DeleteToken(context.Context, *DeleteTokenRequest) (*Token, error)
-	GetToken(context.Context, *GetTokenRequest) (*Token, error)
+	DescToken(context.Context, *DescTokenRequest) (*Token, error)
 	QueryToken(context.Context, *QueryTokenRequest) (*TokenSet, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*Token, error)
 	ValidateToken(context.Context, *ValidateTokenRequest) (*Token, error)
@@ -124,8 +124,8 @@ func (UnimplementedRpcServer) IssueToken(context.Context, *IssueTokenRequest) (*
 func (UnimplementedRpcServer) DeleteToken(context.Context, *DeleteTokenRequest) (*Token, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteToken not implemented")
 }
-func (UnimplementedRpcServer) GetToken(context.Context, *GetTokenRequest) (*Token, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetToken not implemented")
+func (UnimplementedRpcServer) DescToken(context.Context, *DescTokenRequest) (*Token, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescToken not implemented")
 }
 func (UnimplementedRpcServer) QueryToken(context.Context, *QueryTokenRequest) (*TokenSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryToken not implemented")
@@ -185,20 +185,20 @@ func _Rpc_DeleteToken_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rpc_GetToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTokenRequest)
+func _Rpc_DescToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RpcServer).GetToken(ctx, in)
+		return srv.(RpcServer).DescToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Rpc_GetToken_FullMethodName,
+		FullMethod: Rpc_DescToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).GetToken(ctx, req.(*GetTokenRequest))
+		return srv.(RpcServer).DescToken(ctx, req.(*DescTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -273,8 +273,8 @@ var Rpc_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Rpc_DeleteToken_Handler,
 		},
 		{
-			MethodName: "GetToken",
-			Handler:    _Rpc_GetToken_Handler,
+			MethodName: "DescToken",
+			Handler:    _Rpc_DescToken_Handler,
 		},
 		{
 			MethodName: "QueryToken",

@@ -32,7 +32,7 @@ func (h *Handler) registry() {
 	ws := gorestful.ModuleWebservice(h)
 
 	// 令牌撤销
-	ws.Route(ws.GET("/").To(h.QueryEndpoint).
+	ws.Route(ws.GET("").To(h.QueryEndpoint).
 		Doc("端点查询").
 		Metadata(labels.ApiTags, tags).
 		Reads(endpoint.QueryEndpointRequest{}).

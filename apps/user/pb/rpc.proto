@@ -18,7 +18,8 @@ service Rpc {
 }
 enum QueryType {
     QUERY_TYPE_UNSPECIFIED = 0;
-    QUERY_TYPE_USERNAME = 1;
+    QUERY_TYPE_ALL = 1;
+    QUERY_TYPE_USERNAME = 2;
 }
 message UpdateUserRequest {
     // @gotags: validate:"required" json:"id"

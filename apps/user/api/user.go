@@ -48,7 +48,14 @@ func (h *Handler) UpdateUser(r *restful.Request, w *restful.Response) {
 		utils.SendFailed(w, ErrUserUpdateParams(err))
 		return
 	}
-	req := &user.UpdateUserRequest{Id: uid}
+
+	spec := &user.CreateUserRequest{}
+	if err := r.ReadEntity(spec); err != nil {
+		utils.SendFailed(w, ErrUserCreateParams(err))
+		return
+	}
+
+	req := &user.UpdateUserRequest{Id: uid, Spec: spec}
 	ins, err := h.svc.UpdateUser(r.Request.Context(), req)
 	if err != nil {
 		utils.SendFailed(w, ErrUserUpdate(err))
@@ -59,11 +66,20 @@ func (h *Handler) UpdateUser(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) QueryUser(r *restful.Request, w *restful.Response) {
-	req := &user.QueryUserRequest{}
 
-	if err := r.ReadEntity(req); err != nil {
+	num, err := strconv.ParseInt(r.QueryParameter("pageNum"), 10, 64)
+	size, err := strconv.ParseInt(r.QueryParameter("pageSize"), 10, 64)
+	t, err := strconv.ParseInt(r.QueryParameter("queryType"), 10, 64)
+	if err != nil {
 		utils.SendFailed(w, ErrUserQueryParams(err))
 		return
+	}
+
+	req := &user.QueryUserRequest{
+		PageNum:   num,
+		PageSize:  size,
+		QueryType: user.QueryType(t),
+		Keyword:   r.QueryParameter("keyword"),
 	}
 
 	ins, err := h.svc.QueryUser(r.Request.Context(), req)

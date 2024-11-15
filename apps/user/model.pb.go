@@ -218,8 +218,8 @@ type CreateUserRequest struct {
 	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty" validate:"required" gorm:"unique"`
 	// @gotags: validate:"required"
 	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty" validate:"required"`
-	// @gotags: gorm:"json"
-	RoleId []int64 `protobuf:"varint,3,rep,packed,name=role_id,json=roleId,proto3" json:"role_id,omitempty" gorm:"json"`
+	// @gotags: json:"roleId" gorm:"json"
+	RoleId []int64 `protobuf:"varint,3,rep,packed,name=role_id,json=roleId,proto3" json:"roleId" gorm:"json"`
 }
 
 func (x *CreateUserRequest) Reset() {

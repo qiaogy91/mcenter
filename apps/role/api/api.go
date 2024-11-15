@@ -29,7 +29,7 @@ func (h *Handler) registry() {
 	ws := gorestful.ModuleWebservice(h)
 
 	tags := []string{"角色管理"}
-	ws.Route(ws.POST("/").To(h.CreateRole).
+	ws.Route(ws.POST("").To(h.CreateRole).
 		Doc("角色创建").
 		Metadata(labels.ApiTags, tags).
 		Reads(role.Spec{}).
@@ -41,7 +41,7 @@ func (h *Handler) registry() {
 		Param(ws.PathParameter("uid", "角色ID")).
 		Returns(200, "角色实例", role.Role{}))
 
-	ws.Route(ws.GET("/").To(h.QueryRole).
+	ws.Route(ws.GET("").To(h.QueryRole).
 		Doc("角色列表").
 		Metadata(labels.ApiTags, tags).
 		Reads(role.QueryRoleRequest{}).

@@ -23,7 +23,7 @@ func (h *Handler) CreateRole(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) DescRole(r *restful.Request, w *restful.Response) {
-	_id := r.PathParameter("id")
+	_id := r.PathParameter("uid")
 	id, err := strconv.ParseInt(_id, 10, 64)
 	if err != nil {
 		utils.SendFailed(w, ErrRoleDescParams(err))
@@ -66,7 +66,7 @@ func (h *Handler) QueryRole(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) DeleteRole(r *restful.Request, w *restful.Response) {
-	id, err := strconv.ParseInt(r.PathParameter("id"), 10, 64)
+	id, err := strconv.ParseInt(r.PathParameter("uid"), 10, 64)
 	if err != nil {
 		utils.SendFailed(w, ErrRoleDeleteParams(err))
 		return

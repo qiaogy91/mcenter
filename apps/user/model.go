@@ -25,7 +25,7 @@ func (u *User) CheckPassword(password string) error {
 }
 
 func (u *User) RoleStringIds() string {
-	arr := make([]string, len(u.Spec.RoleId))
+	var arr []string
 	for _, item := range u.Spec.RoleId {
 		arr = append(arr, strconv.FormatInt(item, 10))
 	}

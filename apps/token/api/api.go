@@ -32,48 +32,49 @@ func (h *Handler) registry() {
 	ws := gorestful.ModuleWebservice(h)
 	ws.Route(ws.POST("account/login").To(h.AccountLogin).
 		Doc("颁发令牌(账号登录)").
+		Reads(token.IssueTokenRequest{}).
 		Metadata(restfulspec.KeyOpenAPITags, tags),
 	)
-	ws.Route(ws.GET("feishu/login").To(h.FeishuLogin).
+	ws.Route(ws.POST("feishu/login").To(h.FeishuLogin).
 		Doc("颁发令牌(飞书登录)").
+		Reads(token.IssueTokenRequest{}).
 		Metadata(restfulspec.KeyOpenAPITags, tags),
 	)
 
 	// 令牌撤销
-	ws.Route(ws.GET("/").To(h.DeleteToken).
+	ws.Route(ws.DELETE("").To(h.DeleteToken).
 		Doc("令牌撤销").
 		Metadata(labels.ApiTags, tags).
 		Reads(token.DeleteTokenRequest{}).
 		Returns(200, "令牌对象", token.Token{}))
 
 	// 令牌查询
-	ws.Route(ws.GET("/").To(h.QueryToken).
+	ws.Route(ws.GET("").To(h.QueryToken).
 		Doc("令牌查询").
 		Metadata(labels.ApiTags, tags).
 		Reads(token.QueryTokenRequest{}).
 		Returns(200, "令牌列表", token.TokenSet{}))
 
+	// 令牌详情
+	ws.Route(ws.GET("/{accessToken}").To(h.DescToken).
+		Doc("令牌详情").
+		Metadata(labels.ApiTags, tags).
+		Reads(token.DescTokenRequest{}).
+		Returns(200, "令牌对象", token.Token{}))
+
 	// 令牌校验
-	ws.Route(ws.GET("/").To(h.ValidateToken).
+	ws.Route(ws.POST("/validate").To(h.ValidateToken).
 		Doc("令牌校验").
 		Metadata(labels.ApiTags, tags).
 		Reads(token.ValidateTokenRequest{}).
 		Returns(200, "令牌对象", token.Token{}))
 
 	// 令牌刷新
-	ws.Route(ws.GET("/").To(h.RefreshToken).
+	ws.Route(ws.POST("/refresh").To(h.RefreshToken).
 		Doc("令牌刷新").
 		Metadata(labels.ApiTags, tags).
 		Reads(token.RefreshTokenRequest{}).
 		Returns(200, "令牌对象", token.Token{}))
-
-	// 令牌详情
-	ws.Route(ws.GET("/").To(h.GetToken).
-		Doc("令牌详情").
-		Metadata(labels.ApiTags, tags).
-		Reads(token.GetTokenRequest{}).
-		Returns(200, "令牌对象", token.Token{}))
-
 }
 
 func init() {

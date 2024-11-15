@@ -29,7 +29,7 @@ func (h *Handler) registry() {
 
 	tags := []string{"用户管理"}
 
-	ws.Route(ws.POST("/").To(h.CreateUser).
+	ws.Route(ws.POST("").To(h.CreateUser).
 		Doc("用户创建").
 		Metadata(labels.ApiTags, tags).
 		Reads(user.CreateUserRequest{}).
@@ -53,7 +53,7 @@ func (h *Handler) registry() {
 		Param(ws.PathParameter("uid", "用户ID")).
 		Returns(200, "userInstance", user.User{}))
 
-	ws.Route(ws.GET("/").To(h.QueryUser).
+	ws.Route(ws.GET("").To(h.QueryUser).
 		Doc("用户列表").
 		Metadata(labels.ApiTags, tags).
 		Reads(user.QueryUserRequest{}).

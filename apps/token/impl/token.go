@@ -40,7 +40,7 @@ func (i *Impl) DeleteToken(ctx context.Context, req *token.DeleteTokenRequest) (
 		return nil, err
 	}
 
-	inst, err := i.GetToken(ctx, &token.GetTokenRequest{AccessToken: req.AccessToken})
+	inst, err := i.DescToken(ctx, &token.DescTokenRequest{AccessToken: req.AccessToken})
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (i *Impl) DeleteToken(ctx context.Context, req *token.DeleteTokenRequest) (
 	return inst, nil
 }
 
-func (i *Impl) GetToken(ctx context.Context, req *token.GetTokenRequest) (*token.Token, error) {
+func (i *Impl) DescToken(ctx context.Context, req *token.DescTokenRequest) (*token.Token, error) {
 	if err := validator.New().Struct(req); err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (i *Impl) RefreshToken(ctx context.Context, req *token.RefreshTokenRequest)
 		return nil, err
 	}
 
-	inst, err := i.GetToken(ctx, &token.GetTokenRequest{AccessToken: req.AccessToken})
+	inst, err := i.DescToken(ctx, &token.DescTokenRequest{AccessToken: req.AccessToken})
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (i *Impl) QueryToken(ctx context.Context, req *token.QueryTokenRequest) (*t
 
 func (i *Impl) ValidateToken(ctx context.Context, req *token.ValidateTokenRequest) (*token.Token, error) {
 	// 1. 判断是否存在该token
-	inst, err := i.GetToken(ctx, &token.GetTokenRequest{AccessToken: req.AccessToken})
+	inst, err := i.DescToken(ctx, &token.DescTokenRequest{AccessToken: req.AccessToken})
 	if err != nil {
 		return nil, err
 	}

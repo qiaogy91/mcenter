@@ -9,7 +9,7 @@ option go_package = "github.com/qiaogy91/mcenter/apps/token";
 service Rpc {
     rpc IssueToken (IssueTokenRequest) returns (Token); // 颁发令牌
     rpc DeleteToken (DeleteTokenRequest) returns (Token); // 撤销令牌
-    rpc GetToken (GetTokenRequest) returns (Token); // 获取令牌
+    rpc DescToken (DescTokenRequest) returns (Token); // 获取令牌
     rpc QueryToken (QueryTokenRequest) returns (TokenSet); // 查询令牌
 
     rpc RefreshToken (RefreshTokenRequest) returns (Token); // 刷新令牌
@@ -18,7 +18,8 @@ service Rpc {
 
 enum QueryType {
     QUERY_TYPE_UNSPECIFIED = 0;
-    QUERY_TYPE_USERNAME = 1;
+    QUERY_TYPE_ALL = 1;
+    QUERY_TYPE_USERNAME = 2;
 }
 
 enum IssueType {
@@ -41,9 +42,9 @@ message DeleteTokenRequest {
     string refresh_token = 2;// 需要refresh token 才能撤销
 }
 message RefreshTokenRequest {
-    // @gotags: validate:"required"
+    // @gotags: json:"accessToken" validate:"required"
     string access_token = 1; // 要被延长的Token
-    // @gotags: validate:"required"
+    // @gotags: json:"refreshToken" validate:"required"
     string refresh_token = 2;// 需要refresh token 才能延长
 }
 message QueryTokenRequest {
@@ -55,12 +56,12 @@ message QueryTokenRequest {
     QueryType query_type = 3;
     string keyword = 4;
 }
-message GetTokenRequest {
+message DescTokenRequest {
     // @gotags: validate:"required"
     string access_token = 1; // 要被获取的Token
 }
 message ValidateTokenRequest {
-    // @gotags: validate:"required"
+    // @gotags: json:"accessToken" validate:"required"
     string access_token = 1; // 要被验证的Token
 }
 
